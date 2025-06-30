@@ -1,14 +1,23 @@
 package io.whalebone.casestudy.api;
 
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
-import com.microsoft.playwright.*;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-public class CombinedTest {
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
+
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+
+public class NhlApiTest {
 
     // Base URL for API endpoint
     private static final String BASE_URL = "https://qa-assignment.dev1.whalebone.io/api/teams";
@@ -88,17 +97,13 @@ public class CombinedTest {
 
             page.navigate("https://www.nhl.com/fr/canadiens/roster");
 
+            // Wait for the roster content to load
             Locator roster = page.locator(".nhl-container");
             roster.waitFor();
-            // Wait for the roster content to load
-            // page.waitForSelector(".roster-table"); // Replace with actual selector
 
             // Count Canadian and US players with flexible selectors
             int canadianPlayers = page.locator("text=CAN").count();
             int usPlayers = page.locator("text=USA").count();
-            // Or, with XPath:
-            // int canadianPlayers = page.locator("//*[contains(text(), 'CAN')]").count();
-            // int usPlayers = page.locator("//*[contains(text(), 'USA')]").count();
 
             Assert.assertTrue(canadianPlayers > usPlayers, "There are fewer Canadian players than US players");
         }

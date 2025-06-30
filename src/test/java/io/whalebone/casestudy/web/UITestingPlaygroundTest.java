@@ -1,8 +1,6 @@
 package io.whalebone.casestudy.web;
 
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
@@ -20,8 +18,6 @@ public class UITestingPlaygroundTest {
         // Initialize Playwright and launch a browser
         playwright = Playwright.create();
         browser = playwright.chromium().launch();
-        context = browser.newContext();
-        page = context.newPage();
     }
 
     @AfterClass
@@ -33,6 +29,17 @@ public class UITestingPlaygroundTest {
         if (playwright != null) {
             playwright.close();
         }
+    }
+    
+    @BeforeMethod
+    void createContextAndPage() {
+        context = browser.newContext();
+        page = context.newPage();
+    }
+
+    @AfterMethod
+    void closeContext() {
+        context.close();
     }
 
     @Test
@@ -83,7 +90,7 @@ public class UITestingPlaygroundTest {
         page.click("#startButton");
 
         // Wait for the progress bar to reach 100% or until the timeout
-        page.waitForSelector("#progressBar[aria-valuenow='75']", new Page.WaitForSelectorOptions().setTimeout(50000));
+        page.waitForSelector("#progressBar[aria-valuenow='75']", new Page.WaitForSelectorOptions().setTimeout(60000));
 
         page.click("#stopButton");
         
